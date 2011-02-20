@@ -28,6 +28,9 @@ What can be monitored?
 * Domain registrars
 * Cell phone providers
 * VOIP providers
+* E-commerce payment systems
+* Banking accounts
+* ... etc
 
 If provider uses pre-paid scheme, then SPMon scripts would usually
 return account balance (which usually decreases with time, as more and
