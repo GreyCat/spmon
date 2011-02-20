@@ -64,8 +64,10 @@ in to the provider's site and checking the requested data, but this
 emulation shouldn't be considered full and accurate. Throughout
 emulation of real human behavior is a fairly complex task and
 generally contradicts other goals of SPMon project.
-* Portable - 
-* Work out of box (with no or minimal configuration)
+* Portable - SPMon's scripts require only basic UNIX shell and some
+application (currently wget). It should be easy to run SPMon scripts
+in Linux, BSD and Windows systems.
+* Work out of box (with no or minimal configuration).
 * Easy to embed in most monitoring systems - most systems allow
 running external scripts that report values using stdout.
 * Easy to reuse - several lines of code in every script clearly
