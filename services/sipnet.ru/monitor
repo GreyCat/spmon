@@ -1,0 +1,38 @@
+#!/bin/sh
+
+# Input: LOGIN, PASSWORD
+# Output: account balance
+
+exit_handler()
+{
+	local rc=$?
+	trap - EXIT
+	rm -f $TM/1.html $TM/2.html $TM/cookies.txt
+	rmdir $TM
+	exit $rc
+}
+
+TM=$(mktemp -d)
+trap exit_handler HUP PIPE INT QUIT TERM EXIT
+
+UA='Mozilla/5.0 (X11; U; Linux x86_64; ru-RU) AppleWebKit/534.5 (KHTML, like Gecko) Chrome/6.0.482.0 Safari/534.5'
+
+COOKIE_FILE=$TM/cookies.txt
+
+request()
+{
+	wget \
+		--user-agent="$UA" \
+		--load-cookies $COOKIE_FILE \
+		--save-cookies $COOKIE_FILE \
+		--keep-session-cookies \
+		--quiet \
+		$@
+}
+
+request -O $TM/1.html http://www.sipnet.ru/
+request -O $TM/2.html --post-data="CabinetAction=login&Name=$LOGIN&Password=$PASSWORD" https://customer.sipnet.ru/cabinet/
+
+#         <div>12.34&nbsp;<span style="font-size: 80%">y.e.</span></div>
+
+sed -ne '/<span style="font-size: 80%">y.e.</ { s,^\s*<div>\([0-9.]*\)&nbsp;<span style="font-size: 80%">y.e.</span></div>\s*$,\1,; p }' <$TM/2.html
