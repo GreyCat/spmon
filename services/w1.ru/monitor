@@ -1,0 +1,42 @@
+#!/bin/sh
+
+# Input: LOGIN, PASSWORD
+# Output: account balance
+
+exit_handler()
+{
+	local rc=$?
+	trap - EXIT
+	rm -f $TM/1.html $TM/2.html $TM/cookies.txt
+	rmdir $TM
+	exit $rc
+}
+
+TM=$(mktemp -d)
+trap exit_handler HUP PIPE INT QUIT TERM EXIT
+
+UA='Mozilla/5.0 (X11; U; Linux x86_64; ru-RU) AppleWebKit/534.5 (KHTML, like Gecko) Chrome/6.0.482.0 Safari/534.5'
+
+COOKIE_FILE=$TM/cookies.txt
+
+request()
+{
+	wget \
+		--user-agent="$UA" \
+		--load-cookies $COOKIE_FILE \
+		--save-cookies $COOKIE_FILE \
+		--keep-session-cookies \
+		--quiet \
+		$@
+}
+
+request -O $TM/1.html http://wap.w1.ru
+
+ACTION=$(cat $TM/1.html | sed -ne '/action=/ { s/^.*action="\(.*\)".*$/\1/; p }')
+VIEWSTATE=$(cat $TM/1.html | sed -ne '/__VIEWSTATE/ { s/^.*value="\(.*\)".*$/\1/; p }')
+
+request -O $TM/2.html --post-data="__VIEWSTATE=$VIEWSTATE&tbLogin=$LOGIN&tbPassword=$PASSWORD&bcOpenSession=Enter" "http://wap.w1.ru/$ACTION"
+
+# <font face="Arial"><b><a href="balance.aspx"> [123 RUB]</a></b></font></div></font><font face="Verdana"></td>
+
+sed -ne '/<a href="balance.aspx">/ { s/^.*<a href="balance.aspx">\s*\[\s*\([0-9.]*\)\s*RUB\]\s*<\/a>.*$/\1/; p }' <$TM/2.html
