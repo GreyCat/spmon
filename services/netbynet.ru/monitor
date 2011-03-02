@@ -2,8 +2,6 @@
 
 OLDPATH=$PATH; PATH=".:..:$PATH"; . _spmon_lib; PATH=$OLDPATH
 
-DEBUG=1
-
 # Input: LOGIN, PASSWORD
 # Output: number of days of Internet connectivity left
 
@@ -11,4 +9,4 @@ request -O $TM/1.html http://stat.netbynet.ru/
 request -O $TM/2.html --post-data="login=$LOGIN&password=$PASSWORD" 'http://stat.netbynet.ru/?page=reclam'
 request -O $TM/3.html 'http://stat.netbynet.ru/?page=main'
 
-sed -ne '/<!--days/ { s,^.*<!--days/-->\([0-9]+\)<!--/days/-->.*$,\1,; p }' <$TM/3.html
+sed -ne '/<!--days/ { s/^.*-->\([0-9]*\)<!--.*$/\1/; p }' <$TM/3.html

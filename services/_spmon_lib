@@ -1,5 +1,8 @@
 # -*- mode: shell-script -*-
 
+# Make sure that all regular expressions work locale-independently
+export LC_ALL=C
+
 exit_handler()
 {
 	local rc=$?
