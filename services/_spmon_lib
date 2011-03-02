@@ -1,0 +1,34 @@
+# -*- mode: shell-script -*-
+
+exit_handler()
+{
+	local rc=$?
+	trap - EXIT
+	rm -f $TM/1.html $TM/2.html $TM/3.html "$COOKIE_FILE"
+	rmdir $TM
+	exit $rc
+}
+
+if [ -z "$DEBUG" ]; then
+	TM=$(mktemp -d)
+	trap exit_handler HUP PIPE INT QUIT TERM EXIT
+	WGET_OPTIONS=--quiet
+else
+	TM=.
+	WGET_OPTIONS=
+fi
+
+COOKIE_FILE="$TM/cookies.txt"
+
+UA='Mozilla/5.0 (X11; U; Linux x86_64; ru-RU) AppleWebKit/534.5 (KHTML, like Gecko) Chrome/6.0.482.0 Safari/534.5'
+
+request()
+{
+	wget \
+		--user-agent="$UA" \
+		--load-cookies "$COOKIE_FILE" \
+		--save-cookies "$COOKIE_FILE" \
+		--keep-session-cookies \
+		--quiet \
+		$@
+}

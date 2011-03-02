@@ -1,37 +1,14 @@
 #!/bin/sh
 
+OLDPATH=$PATH; PATH=".:..:$PATH"; . _spmon_lib; PATH=$OLDPATH
+
+DEBUG=1
+
 # Input: LOGIN, PASSWORD
 # Output: number of days of Internet connectivity left
-
-exit_handler()
-{
-	local rc=$?
-	trap - EXIT
-	rm -f $TM/1.html $TM/2.html $TM/3.html $TM/cookies.txt
-	rmdir $TM
-	exit $rc
-}
-
-TM=$(mktemp -d)
-trap exit_handler HUP PIPE INT QUIT TERM EXIT
-
-UA='Mozilla/5.0 (X11; U; Linux x86_64; ru-RU) AppleWebKit/534.5 (KHTML, like Gecko) Chrome/6.0.482.0 Safari/534.5'
-
-COOKIE_FILE=$TM/cookies.txt
-
-request()
-{
-	wget \
-		--user-agent="$UA" \
-		--load-cookies $COOKIE_FILE \
-		--save-cookies $COOKIE_FILE \
-		--keep-session-cookies \
-		--quiet \
-		$@
-}
 
 request -O $TM/1.html http://stat.netbynet.ru/
 request -O $TM/2.html --post-data="login=$LOGIN&password=$PASSWORD" 'http://stat.netbynet.ru/?page=reclam'
 request -O $TM/3.html 'http://stat.netbynet.ru/?page=main'
 
-ruby -e '$stdin.each_line { |l| puts $1 if l =~ /<!--days\/-->(\d+)<!--\/days\/-->/ }' <$TM/3.html
+sed -ne '/<!--days/ { s,^.*<!--days/-->\([0-9]+\)<!--/days/-->.*$,\1,; p }' <$TM/3.html

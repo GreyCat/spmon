@@ -51,6 +51,13 @@ in to service providers) as environment variables, i.e.:
     LOGIN=some-login PASSWORD=s0m3-p4ssw0rd ./monitor
 
 * If everything's okay, script would output result at stdout.
+* If you want to install a given script somewhere permanently, note
+that all scripts require "_spmon_lib" file with common functions and
+initializations. You have 2 options:
+  * Either copy required script (`services/xxx/monitor`) and common
+  functions file (`services/_spmon_lib`) in the same directory,
+  * Or put common functions file somewhere in PATH
+  (i.e. `/usr/local/bin`, `/usr/bin`, etc) where it can be found.
 
 Philosophy
 ----------
