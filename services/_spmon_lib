@@ -29,6 +29,6 @@ request()
 		--load-cookies "$COOKIE_FILE" \
 		--save-cookies "$COOKIE_FILE" \
 		--keep-session-cookies \
-		--quiet \
+		$WGET_OPTIONS \
 		$@
 }
