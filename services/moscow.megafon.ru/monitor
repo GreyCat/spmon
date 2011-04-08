@@ -12,4 +12,4 @@ request -O $TM/2.html --post-data="MOBILE_MODE=AUTH&LOGIN=$LOGIN&PASSWORD=$PASSW
 
 # <span id="statusbalance"><span class="balance_good">&#1058;&#1077;&#1082;&#1091;&#1097;&#1080;&#1081; &#1073;&#1072;&#1083;&#1072;&#1085;&#1089;: 123.45 &#1088;&#1091;&#1073;.</span></span>
 
-sed -ne '/<span id="statusbalance">/ { s,^<span id="statusbalance">.*: \([0-9.]*\) &#1088;&#1091;&#1073;.</span></span>$,\1,; p }' <$TM/2.html
+sed -ne '/<span id="statusbalance">/ { s,^<span id="statusbalance">.*: \([0-9.-]*\) &#1088;&#1091;&#1073;.</span></span>$,\1,; p }' <$TM/2.html
