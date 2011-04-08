@@ -1,6 +1,6 @@
 #!/bin/sh
 
-OLDPATH=$PATH; PATH=".:..:$PATH"; . _spmon_lib; PATH=$OLDPATH
+OLDPATH=$PATH; PATH=".:..:$(dirname $0):$PATH"; . _spmon_lib; PATH=$OLDPATH
 
 # Input: LOGIN, PASSWORD
 # Output: account balance
