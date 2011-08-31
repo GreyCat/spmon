@@ -1,0 +1,32 @@
+#!/bin/sh -e
+
+OLDPATH=$PATH; PATH=".:..:$(dirname $0):$PATH"; . _spmon_lib; PATH=$OLDPATH
+
+# Input: LOGIN, PASSWORD
+# Output: account balance
+
+request_curl()
+{
+	local add_arg=
+	[ -z "$DEBUG" ] && add_arg=--silent || add_arg=--verbose
+	curl \
+		--user-agent "$UA" \
+		--cookie "$COOKIE_FILE" \
+		--cookie-jar "$COOKIE_FILE" \
+		--location \
+		$add_arg $@
+}
+
+request_curl -o $TM/1.html https://uslugi.beeline.ru/
+request_curl -o $TM/2.html \
+	--data "_stateParam=eCareLocale.currentLocale%3Dru_RU__Russian&_forwardName=null&_resetBreadCrumbs=false&_expandStatus=&userName=$LOGIN&password=$PASSWORD&ecareAction=login" \
+	https://uslugi.beeline.ru/loginPage.do
+request_curl -o $TM/3.html \
+	--referer https://uslugi.beeline.ru/VIPLoadPrepaidCtnArchiveOfRequestsAction.do \
+	https://uslugi.beeline.ru/vip/prepaid/refreshedPrepaidBalance.jsp
+
+#                                <td class="tabred">
+#                                        123,45&nbsp;руб.&nbsp;<small class="gray">на&nbsp;12:34</small>
+#                                </td>
+
+iconv -f windows-1251 -t utf-8 $TM/3.html | sed -ne '/руб./ { s/&nbsp;.*$//; s/^\s*//; s/,/./; p }'
