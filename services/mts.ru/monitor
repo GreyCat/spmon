@@ -7,8 +7,8 @@ OLDPATH=$PATH; PATH=".:..:$(dirname $0):$PATH"; . _spmon_lib; PATH=$OLDPATH
 
 UA='Mozilla/5.0 (Linux; U; Android 2.2; en-us; Desire_A8181 Build/FRF91) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1'
 
-request -O $TM/1.html 'https://ihelper.mts.ru/SELFCAREPDA/Security.mvc/LogOn?returnLink=http%3A%2F%2Fihelper.mts.ru%3A8083%2FSELFCAREPDA%2FHome.mvc'
-request -O $TM/2.html --post-data="username=$LOGIN&password=$PASSWORD" 'https://ihelper.mts.ru/SELFCAREPDA/Security.mvc/LogOn?returnLink=http%3A%2F%2Fihelper.mts.ru%3A8083%2FSELFCAREPDA%2FHome.mvc'
+request -O $TM/1.html 'https://ip.mts.ru/selfcarepda/Security.mvc/LogOn'
+request -O $TM/2.html --post-data="username=$LOGIN&password=$PASSWORD" 'https://ip.mts.ru/selfcarepda/Security.mvc/LogOn'
 
 #                         <br/>Баланс: <strong><strong>123.45</strong> руб.</strong>
 
