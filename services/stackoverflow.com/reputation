@@ -1,0 +1,14 @@
+#!/bin/sh
+
+OLDPATH=$PATH; PATH=".:..:$(dirname $0):$PATH"; . _spmon_lib; PATH=$OLDPATH
+
+# Input: USER_ID, HOST
+# Output: reputation counter
+
+: ${HOST:=stackoverflow.com}
+
+request -O $TM/1.html "http://$HOST/users/$USER_ID/"
+
+# <a href="/privileges" title="view reputation privileges"><span class="summarycount">108</span></a>
+
+sed -ne '/<a href="\/privileges"/ { s|^.*<span class="summarycount">\([0-9]*\)</span>.*$|\1|; p }' $TM/1.html

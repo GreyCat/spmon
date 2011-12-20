@@ -35,3 +35,8 @@ request()
 		$WGET_OPTIONS \
 		$@
 }
+
+grab()
+{
+	perl -e "undef \$/; \$_ = <>; print \$$2 if /$1/m;"
+}

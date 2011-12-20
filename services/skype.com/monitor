@@ -10,4 +10,4 @@ request -O $TM/2.html --post-data="username=$LOGIN&password=$PASSWORD" https://l
 
 # <span id="balanceAmount"><span class='ccy'>&#36;</span>12.34</span>
 
-sed -ne '/<span id="balanceAmount">/ { s/^\s*<span id="balanceAmount">.*>\([0-9.]*\)<.*$/\1/; p }' <$TM/2.html
+grab '<span id="balanceAmount">.*>([0-9.]*)<' 1 <$TM/2.html

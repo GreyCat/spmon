@@ -1,0 +1,21 @@
+#!/bin/sh
+
+OLDPATH=$PATH; PATH=".:..:$(dirname $0):$PATH"; . _spmon_lib; PATH=$OLDPATH
+
+# Input: LOGIN, PASSWORD
+# Output: account balance
+
+request -O $TM/1.html https://telebank.minbank.ru:1443
+request -O $TM/2.html \
+	--post-data="Action=GetPAN&FIID=FIID&AuthMode=PAN&Name=912912$LOGIN&PIN=$PASSWORD" \
+	https://telebank.minbank.ru:1443/Actions/do.jsp
+request -O $TM/3.html \
+	--post-data="Action=Logon&Step=F&FormMustBeSigned=FormMustBeSigned" \
+	https://telebank.minbank.ru:1443/Actions/do.jsp
+request -O $TM/4.html \
+	--post-data="Action=Accts" \
+	https://telebank.minbank.ru:1443/Actions/do.jsp
+
+#	<small>RUR</small></td><td nowrap="nowrap" align="right">1 500.00
+
+grep -om 1 'ht">.*\.[0-9][0-9]' <$TM/4.html | sed 's/ht">//;s/ //g'
