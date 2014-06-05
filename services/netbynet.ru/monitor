@@ -5,8 +5,7 @@ OLDPATH=$PATH; PATH=".:..:$(dirname $0):$PATH"; . _spmon_lib; PATH=$OLDPATH
 # Input: LOGIN, PASSWORD
 # Output: number of days of Internet connectivity left
 
-request -O $TM/1.html http://stat.netbynet.ru/
-request -O $TM/2.html --post-data="login=$LOGIN&password=$PASSWORD" 'http://stat.netbynet.ru/?page=reclam'
-request -O $TM/3.html 'http://stat.netbynet.ru/?page=main'
+request -O $TM/1.html https://stat.netbynet.ru/
+request -O $TM/2.html --post-data="login=$LOGIN&password=$PASSWORD" https://stat.netbynet.ru/
 
-sed -ne '/<!--days/ { s/^.*-->\([0-9]*\)<!--.*$/\1/; p }' <$TM/3.html
+grab 'До окончания текущего расчетного периода осталось (\d+) дн' 1 <$TM/2.html
